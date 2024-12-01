@@ -41,16 +41,24 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setApiKey(savedInstanceState)
-
         MapKitFactory.initialize(this)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val traffic = MapKitFactory.getInstance().createTrafficLayer(binding.mapview.mapWindow)
+        binding.showTrafficBTN.setOnClickListener {
+            if (traffic.isTrafficVisible) {
+                traffic.isTrafficVisible = false
+                showToast("Отображение трафика отключено")
+            } else {
+                traffic.isTrafficVisible = true
+                showToast("Отображение трафика включено")
+            }
+        }
+
         locationManager = MapKitFactory.getInstance().createLocationManager()
-
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
             != PackageManager.PERMISSION_GRANTED
